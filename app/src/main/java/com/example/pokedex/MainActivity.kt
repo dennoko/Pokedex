@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.pokedex.ui.theme.PokedexTheme
 import com.example.pokedex.view.screens.MainScreen
+import com.example.pokedex.view.ui_components.CustomTopAppBar
 import com.example.pokedex.viewmodel.MainScViewModel
 
 class MainActivity : ComponentActivity() {
@@ -33,7 +34,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Scaffold {
+                    Scaffold(
+                        topBar = {
+                            CustomTopAppBar()
+                        }
+                    ) {
                         NavHost(navController, "main", modifier = Modifier.padding(it)) {
                             composable("main") {
                                 MainScreen()
