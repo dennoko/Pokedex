@@ -21,8 +21,8 @@ class MainScPagingSource(
             val data = mutableListOf<List<PokemonData>>()
 
             // 20回リクエストを送信
-            for(i in 1..25) {
-                val response: HttpResponse = withContext(Dispatchers.IO) { client.get("https://pokeapi.co/api/v2/pokemon/${25*(page-1)+i}") }
+            for(i in 1..15) {
+                val response: HttpResponse = withContext(Dispatchers.IO) { client.get("https://pokeapi.co/api/v2/pokemon/${15*(page-1)+i}") }
                 val pokemonData = response.receive<PokemonData>()
                 data.add(listOf(pokemonData))
             }
