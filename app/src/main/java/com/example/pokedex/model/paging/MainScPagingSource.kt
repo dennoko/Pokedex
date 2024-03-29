@@ -7,6 +7,8 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.receive
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class MainScPagingSource(
     private val client: HttpClient
@@ -20,7 +22,7 @@ class MainScPagingSource(
 
             // 20回リクエストを送信
             for(i in 1..20) {
-                val response: HttpResponse = client.get("https://pokeapi.co/api/v2/pokemon/${20*(page-1)+i}")
+                val response: HttpResponse = withContext(Dispatchers.IO) { client.get("https://pokeapi.co/api/v2/pokemon/${20*(page-1)+i}") }
                 val pokemonData = response.receive<PokemonData>()
                 data.add(listOf(pokemonData))
             }
