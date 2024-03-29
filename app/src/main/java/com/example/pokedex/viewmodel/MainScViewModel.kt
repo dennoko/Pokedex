@@ -9,13 +9,11 @@ import androidx.paging.PagingData
 import com.example.pokedex.model.data.api_response.PokemonData
 import com.example.pokedex.model.paging.MainScPagingSource
 import com.example.pokedex.model.repository.ApiRepository
-import com.example.pokedex.viewmodel.data.PokemonDataForInfoCard
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 class MainScViewModel: ViewModel() {
