@@ -3,43 +3,43 @@ package com.example.pokedex.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import com.example.pokedex.model.data.api_response.PokemonData
+import com.example.pokedex.model.paging.MainScPagingSource
 import com.example.pokedex.model.repository.ApiRepository
 import com.example.pokedex.viewmodel.data.PokemonDataForInfoCard
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.json.serializer.KotlinxSerializer
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 
 class MainScViewModel: ViewModel() {
-    val apiRepository = ApiRepository()
-
-    fun apiTest() {
-        Log.d("MainViewModelMethod", "apiTest()")
-        viewModelScope.launch { apiRepository.getPokemonList() }
-    }
-
-    fun apiTest2() {
-        Log.d("MainViewModelMethod", "apiTest2()")
-        // random number between 1 and 100
-        viewModelScope.launch { apiRepository.getPokemonFromId((1..100).random()) }
-    }
-
-    fun apiTest3() {
-        Log.d("MainViewModelMethod", "apiTest3()")
-        viewModelScope.launch { apiRepository.getPokemonFromName("pikachu") }
-    }
-
-    fun uiTest(): List<PokemonDataForInfoCard> {
-        val returnList = mutableListOf<PokemonDataForInfoCard>()
-
-        val data = PokemonDataForInfoCard(
-            name = "ピカチュウ",
-            id = 25,
-            imgUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
-            types = listOf("でんき", "あく")
-        )
-
-        for(i in 1..100) {
-            returnList.add(data)
+    // Create a Ktor client
+    private val client = HttpClient(CIO) {
+        install(JsonFeature) {
+            serializer = KotlinxSerializer(
+                Json {
+                    ignoreUnknownKeys = true // if the server sends extra fields, ignore them
+                }
+            )
         }
-
-        return returnList
     }
+
+    private val apiRepository = ApiRepository(client)
+
+
+
+    // Create a flow of PokemonData
+    val myDataFlow: Flow<PagingData<List<PokemonData>>> = Pager(
+        config = PagingConfig(
+            pageSize = 20,
+            enablePlaceholders = false
+        ),
+        pagingSourceFactory = { MainScPagingSource(client) }
+    ).flow
 }
