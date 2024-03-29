@@ -15,6 +15,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.pokedex.ui.theme.PokedexTheme
 import com.example.pokedex.view.screens.MainScreen
+import com.example.pokedex.view.ui_components.CustomBottomAppBar
+import com.example.pokedex.view.ui_components.CustomTopAppBar
 import com.example.pokedex.viewmodel.MainScViewModel
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +24,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val mainvm: MainScViewModel by viewModels()
-        mainvm.apiTest3()
+        val uiTestData = mainvm.uiTest() // Todo: Remove this line
 
         setContent {
             val navController = rememberNavController()
@@ -33,10 +35,19 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Scaffold {
+                    Scaffold(
+                        topBar = {
+                            CustomTopAppBar()
+                        },
+                        bottomBar = {
+                            CustomBottomAppBar(
+                                homeIconClicked = { navController.navigate("main") },
+                            )
+                        }
+                    ) {
                         NavHost(navController, "main", modifier = Modifier.padding(it)) {
                             composable("main") {
-                                MainScreen()
+                                MainScreen(uiTestData)
                             }
                         }
                     }
