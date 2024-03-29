@@ -37,7 +37,7 @@ fun CustomBottomAppBar(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = Color.Transparent),
+            .background(color = MaterialTheme.colorScheme.secondary),
         contentAlignment = Alignment.BottomCenter
     ) {
         Row(

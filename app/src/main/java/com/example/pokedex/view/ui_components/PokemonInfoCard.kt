@@ -4,9 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -35,6 +38,8 @@ fun PokemonInfoCard(
     ) {
         ElevatedCard(
             modifier = Modifier
+                .height(120.dp)
+                .background(color = MaterialTheme.colorScheme.background)
                 .padding(8.dp)
                 .clickable { infoCardClicked() },
             colors = CardDefaults.elevatedCardColors( containerColor = Color.White ),
@@ -57,6 +62,8 @@ fun PokemonInfoCard(
                 Column {
                     // id and name
                     Row(
+                        modifier = Modifier
+                            .weight(1f),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
@@ -80,15 +87,14 @@ fun PokemonInfoCard(
                     Divider()
 
                     // types
-                    Row {
+                    Row(
+                        modifier = Modifier
+                            .weight(1f),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         for (type in data.types) {
-                            Text(
-                                text = type,
-                                modifier = Modifier
-                                    .padding(8.dp),
-                                color = Color.Black,
-                                style = MaterialTheme.typography.bodyLarge
-                            )
+                            TypeCard(type)
+                            Spacer(Modifier.width(8.dp))
                         }
                     }
                 }
@@ -105,7 +111,7 @@ fun PokemonInfoCardPreview() {
         name = "ピカチュウ",
         id = 25,
         imgUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
-        types = listOf("でんき")
+        types = listOf("でんき", "あく")
     )
 
     PokedexTheme {
