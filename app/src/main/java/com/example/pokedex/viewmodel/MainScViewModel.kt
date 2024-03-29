@@ -36,6 +36,7 @@ class MainScViewModel: ViewModel() {
     val myDataFlow: Flow<PagingData<List<PokemonData>>> = Pager(
         config = PagingConfig(
             pageSize = 20,
+            prefetchDistance = 30,
             enablePlaceholders = false
         ),
         pagingSourceFactory = { MainScPagingSource(client) }
