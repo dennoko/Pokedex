@@ -23,10 +23,21 @@ object TranslationManager {
         }
     }
 
-    fun getJPName(enName: String): String {
+    fun getJPName(name: String): String {
         // enName の頭を大文字に変換
-        val enName = enName.replaceFirst(enName[0], enName[0].toUpperCase())
-        return translations?.nameList?.find { it.en == enName }?.jp ?: enName
+        val enName = name.replaceFirst(name[0], name[0].toUpperCase())
+        var result = translations?.nameList?.find { it.en == enName }?.jp
+        if (result == null) {
+            // enName に - が含まれている場合、- の前半を取得
+            val hyphenIndex = enName.indexOf("-")
+            if (hyphenIndex != -1) {
+                val editedEnName = enName.substring(0, hyphenIndex)
+                Log.d("TranslationManagerTest", "editedEnName: $editedEnName")
+                result = translations?.nameList?.find { it.en == editedEnName }?.jp
+                Log.d("TranslationManagerTest", "result: $result")
+            }
+        }
+        return result ?: enName
     }
 
     fun getENName(jaName: String): String {

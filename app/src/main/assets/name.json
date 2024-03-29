@@ -113,7 +113,7 @@
       "jp": "サンドパン"
     },
     {
-      "en": "Nidoran♀",
+      "en": "Nidoran-f",
       "jp": "ニドラン♀"
     },
     {
@@ -125,7 +125,7 @@
       "jp": "ニドクイン"
     },
     {
-      "en": "Nidoran♂",
+      "en": "Nidoran-m",
       "jp": "ニドラン♂"
     },
     {
@@ -485,7 +485,7 @@
       "jp": "スターミー"
     },
     {
-      "en": "Mr. Mime",
+      "en": "Mr-Mime",
       "jp": "バリヤード"
     },
     {
@@ -997,7 +997,7 @@
       "jp": "ルギア"
     },
     {
-      "en": "Ho-Oh",
+      "en": "Ho-oh",
       "jp": "ホウオウ"
     },
     {
@@ -1753,7 +1753,7 @@
       "jp": "ウソハチ"
     },
     {
-      "en": "Mime Jr.",
+      "en": "Mime-jr",
       "jp": "マネネ"
     },
     {
@@ -2673,7 +2673,7 @@
       "jp": "カエンジシ"
     },
     {
-      "en": "Flabébé",
+      "en": "Flabebe",
       "jp": "フラベベ"
     },
     {
@@ -3137,19 +3137,19 @@
       "jp": "ジャラランガ"
     },
     {
-      "en": "Tapu Koko",
+      "en": "Tapu-koko",
       "jp": "カプ・コケコ"
     },
     {
-      "en": "Tapu Lele",
+      "en": "Tapu-lele",
       "jp": "カプ・テテフ"
     },
     {
-      "en": "Tapu Bulu",
+      "en": "Tapu-bulu",
       "jp": "カプ・ブルル"
     },
     {
-      "en": "Tapu Fini",
+      "en": "Tapu-fini",
       "jp": "カプ・レヒレ"
     },
     {
@@ -3457,11 +3457,11 @@
       "jp": "サニゴーン"
     },
     {
-      "en": "Sirfetch’d",
+      "en": "Sirfetchd",
       "jp": "ネギガナイト"
     },
     {
-      "en": "Mr. Rime",
+      "en": "Mr-Rime",
       "jp": "バリコオル"
     },
     {

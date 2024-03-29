@@ -14,14 +14,14 @@ class MainScPagingSource(
     private val client: HttpClient
 ): PagingSource<Int, List<PokemonData>>(){
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, List<PokemonData>> {
-        // 1 ページで20個のポケモンデータを取得する。 http リクエストは1ページあたり20回送信される。
+        // 1 ページで5個のポケモンデータを取得する。 http リクエストは1ページあたり20回送信される。
         return try {
             val page = params.key ?: 1
             // データのリストを用意
             val data = mutableListOf<List<PokemonData>>()
 
             // 20回リクエストを送信
-            for(i in 1..20) {
+            for(i in 1..5) {
                 val response: HttpResponse = withContext(Dispatchers.IO) { client.get("https://pokeapi.co/api/v2/pokemon/${20*(page-1)+i}") }
                 val pokemonData = response.receive<PokemonData>()
                 data.add(listOf(pokemonData))
