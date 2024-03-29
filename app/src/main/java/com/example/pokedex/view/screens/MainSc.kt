@@ -10,6 +10,7 @@ import androidx.compose.ui.text.Placeholder
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.pokedex.model.data.api_response.PokemonData
+import com.example.pokedex.model.translation.TranslationManager
 import com.example.pokedex.view.ui_components.PokemonInfoCard
 import com.example.pokedex.view.ui_components.SearchBox
 import com.example.pokedex.viewmodel.data.PokemonDataForInfoCard
@@ -33,10 +34,11 @@ fun MainScreen(
                 // 各 item に対して PokemonInfoCard を生成
                 item?.forEach {
                     val pokeData = PokemonDataForInfoCard(
-                        name = it.name,
+                        name = TranslationManager.getJPName(it.name),
                         id = it.id,
                         imgUrl = it.sprites.frontDefault ?: "",
-                        types = it.types.map { type -> type.type.name }
+                        // Type は TranslationManager.getJPType で日本語に変換
+                        types = it.types.map { type -> TranslationManager.getJPType(type.type.name) },
                     )
 
                     PokemonInfoCard(pokeData)

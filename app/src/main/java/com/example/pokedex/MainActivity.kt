@@ -1,6 +1,7 @@
 package com.example.pokedex
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -13,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.pokedex.model.translation.TranslationManager
 import com.example.pokedex.ui.theme.PokedexTheme
 import com.example.pokedex.view.screens.MainScreen
 import com.example.pokedex.view.ui_components.CustomBottomAppBar
@@ -24,6 +26,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val mainvm: MainScViewModel by viewModels()
+
+        // 翻訳の準備
+        TranslationManager.loadTranslations(this)
 
         setContent {
             val navController = rememberNavController()
