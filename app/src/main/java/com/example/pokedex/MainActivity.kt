@@ -24,7 +24,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val mainvm: MainScViewModel by viewModels()
-        val uiTestData = mainvm.uiTest() // Todo: Remove this line
 
         setContent {
             val navController = rememberNavController()
@@ -47,7 +46,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         NavHost(navController, "main", modifier = Modifier.padding(it)) {
                             composable("main") {
-                                MainScreen(uiTestData)
+                                MainScreen(mainvm.myDataFlow)
                             }
                         }
                     }
