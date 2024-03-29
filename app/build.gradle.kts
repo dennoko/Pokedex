@@ -82,4 +82,8 @@ dependencies {
 
     // kotlin-serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+
+    // paging 3
+    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
+    implementation("androidx.paging:paging-compose:3.3.0-alpha05")
 }

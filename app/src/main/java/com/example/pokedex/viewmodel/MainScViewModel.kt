@@ -5,10 +5,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pokedex.model.repository.ApiRepository
 import com.example.pokedex.viewmodel.data.PokemonDataForInfoCard
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.json.serializer.KotlinxSerializer
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 
 class MainScViewModel: ViewModel() {
-    val apiRepository = ApiRepository()
+    // Create a Ktor client
+    private val client = HttpClient(CIO) {
+        install(JsonFeature) {
+            serializer = KotlinxSerializer(
+                Json {
+                    ignoreUnknownKeys = true // if the server sends extra fields, ignore them
+                }
+            )
+        }
+    }
+
+    private val apiRepository = ApiRepository(client)
 
     fun apiTest() {
         Log.d("MainViewModelMethod", "apiTest()")

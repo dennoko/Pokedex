@@ -5,23 +5,13 @@ import com.example.pokedex.model.data.api_response.NormalApiResponse
 import com.example.pokedex.model.data.api_response.PokemonData
 import io.ktor.client.HttpClient
 import io.ktor.client.call.receive
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 
-class ApiRepository {
-    // Create a Ktor client
-    val client = HttpClient(CIO) {
-        install(JsonFeature) {
-            serializer = KotlinxSerializer(
-                kotlinx.serialization.json.Json {
-                    ignoreUnknownKeys = true // if the server sends extra fields, ignore them
-                }
-            )
-        }
-    }
+class ApiRepository(
+    client: HttpClient
+) {
+    private val client = client
 
     // get the list of all pokemons
     suspend fun getPokemonList(): NormalApiResponse {
