@@ -20,7 +20,9 @@ import com.example.pokedex.view.screens.MainScreen
 import com.example.pokedex.view.ui_components.CustomBottomAppBar
 import com.example.pokedex.view.ui_components.CustomTopAppBar
 import com.example.pokedex.viewmodel.MainScViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

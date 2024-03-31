@@ -4,7 +4,9 @@ plugins {
     // serialization plugin
     kotlin("plugin.serialization") version "1.9.23"
     // ksp
-    id("com.google.devtools.ksp") version "1.6.0-1.0.0"
+    id("com.google.devtools.ksp")
+    // hilt
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -51,6 +53,8 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    sourceSets["main"].java.srcDirs("build/generated/ksp/main/kotlin")
 }
 
 dependencies {
@@ -95,4 +99,8 @@ dependencies {
     ksp("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-paging:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
+
+    // Hilt
+    implementation("com.google.dagger:hilt-android:2.50")
+    ksp("com.google.dagger:hilt-compiler:2.50")
 }
