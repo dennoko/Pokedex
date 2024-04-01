@@ -25,7 +25,7 @@ class MainScPagingSource(
 
             LoadResult.Page(
                 data = data,
-                prevKey = if(page == 1) null else page - 1,
+                prevKey = null, // 1ページ目の前にはページがないので nullb
                 nextKey = if(data.isEmpty()) null else page + 1
             )
         } catch (e: Exception) {

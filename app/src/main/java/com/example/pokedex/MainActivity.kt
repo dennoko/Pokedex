@@ -26,6 +26,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val mainvm: MainScViewModel by viewModels()
+        mainvm.initDB(this)
 
         // 翻訳の準備
         TranslationManager.loadTranslations(this)

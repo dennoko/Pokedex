@@ -13,23 +13,22 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.receive
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
+import io.ktor.http.date
 
 @OptIn(ExperimentalPagingApi::class)
 class MainRemoteMediator(
     private val client: HttpClient,
     private val db: MainDB
-): RemoteMediator<Int, PokemonData>() {
-    override suspend fun load(loadType: LoadType, state: PagingState<Int, PokemonData>): MediatorResult {
+): RemoteMediator<Int, MainEntity>() {
+    override suspend fun load(loadType: LoadType, state: PagingState<Int, MainEntity>): MediatorResult {
         return try {
             // determine the page number from the LoadType
             val page = when(loadType) {
                 LoadType.REFRESH -> 1
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
-                    val lastItem = state.lastItemOrNull()
-                    // return lastItem id + 1
-                    val lastPage = lastItem?.id ?: return MediatorResult.Success(endOfPaginationReached = true)
-                    lastPage + 1
+                    val lastItem = state.lastItemOrNull()?.id?.plus(1)
+                    lastItem ?: 1
                 }
             }
 
@@ -41,7 +40,7 @@ class MainRemoteMediator(
             // insert the data into the database
             db.withTransaction {
                 // insert the new data
-                db.mainDao().insert(MainEntity(page, data))
+                db.mainDao().insert(MainEntity(id = page, jsonPokeData = data))
             }
 
             // determine if the end of the pagination is reached
