@@ -9,11 +9,16 @@ import androidx.paging.PagingData
 import com.example.pokedex.model.data.api_response.PokemonData
 import com.example.pokedex.model.paging.MainScPagingSource
 import com.example.pokedex.model.repository.ApiRepository
+import com.example.pokedex.viewmodel.data.MainScUiState
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.features.json.serializer.KotlinxSerializer
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 class MainScViewModel: ViewModel() {
@@ -30,8 +35,6 @@ class MainScViewModel: ViewModel() {
 
     private val apiRepository = ApiRepository(client)
 
-
-
     // Create a flow of PokemonData
     val myDataFlow: Flow<PagingData<List<PokemonData>>> = Pager(
         config = PagingConfig(
@@ -41,4 +44,16 @@ class MainScViewModel: ViewModel() {
         ),
         pagingSourceFactory = { MainScPagingSource(client) }
     ).flow
+
+    private val _uiState = MutableStateFlow(
+        MainScUiState(
+            pokeDataList = myDataFlow,
+        )
+    )
+    val mainScUiState: StateFlow<MainScUiState> = _uiState.asStateFlow()
+
+    fun changeShowDetail(isShow: Boolean = !_uiState.value.isShowDetail) {
+        val newUiState = _uiState.value.copy(isShowDetail = isShow)
+        _uiState.value = newUiState
+    }
 }

@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,6 +34,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
+            // MainScreen UI State
+            val mainUiState by mainvm.mainScUiState.collectAsState()
 
             PokedexTheme {
                 // A surface container using the 'background' color from the theme
@@ -45,13 +49,21 @@ class MainActivity : ComponentActivity() {
                         },
                         bottomBar = {
                             CustomBottomAppBar(
-                                homeIconClicked = { navController.navigate("main") },
+                                homeIconClicked = {
+                                    mainvm.changeShowDetail(isShow = false)
+                                    navController.navigate("main")
+                                }
                             )
                         }
                     ) {
                         NavHost(navController, "main", modifier = Modifier.padding(it)) {
                             composable("main") {
-                                MainScreen(mainvm.myDataFlow)
+                                MainScreen(
+                                    mainUiState,
+                                    changeShowDetail = {
+                                        mainvm.changeShowDetail()
+                                    },
+                                )
                             }
                         }
                     }

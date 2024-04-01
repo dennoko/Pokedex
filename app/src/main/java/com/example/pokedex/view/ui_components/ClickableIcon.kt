@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 fun ClickableIcon(
     imageVector: ImageVector? = null,
     painter: Painter? = null,
+    modifier: Modifier = Modifier,
     contentDescription: String,
     size: Dp = 32.dp,
     color: Color = Color.White,
@@ -35,7 +36,8 @@ fun ClickableIcon(
                     interactionSource = remember { MutableInteractionSource() }
                 )
                 .aspectRatio(1f)
-                .size(size),
+                .size(size)
+                .then(modifier),
             tint = color
         )
     }
@@ -51,7 +53,8 @@ fun ClickableIcon(
                     interactionSource = remember { MutableInteractionSource() }
                 )
                 .aspectRatio(1f)
-                .size(size),
+                .size(size)
+                .then(modifier),
             tint = color
         )
     }
