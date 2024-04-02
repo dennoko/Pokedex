@@ -84,7 +84,7 @@ fun PokemonInfoCard(
                             style = MaterialTheme.typography.headlineSmall
                         )
                     }
-                    Divider()
+                    Divider(color = Color.Gray)
 
                     // types
                     Row(

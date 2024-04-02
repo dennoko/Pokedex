@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.example.pokedex.model.data.api_response.AbilityData
 import com.example.pokedex.model.data.api_response.PokemonData
 import com.example.pokedex.model.paging.MainScPagingSource
 import com.example.pokedex.model.repository.ApiRepository
@@ -55,5 +56,20 @@ class MainScViewModel: ViewModel() {
     fun changeShowDetail(isShow: Boolean = !_uiState.value.isShowDetail) {
         val newUiState = _uiState.value.copy(isShowDetail = isShow)
         _uiState.value = newUiState
+    }
+
+    // get the ability
+    fun getAbility(urls: List<String>) {
+        viewModelScope.launch {
+            val getAbilities = mutableListOf<AbilityData>()
+            urls.forEach { url ->
+                val ability = apiRepository.getAbility(url)
+                getAbilities.add(ability)
+            }
+
+            val newUiState = _uiState.value.copy(abilities = getAbilities)
+            _uiState.value = newUiState
+            Log.d("MainScViewModelMethod", "getAbility: $getAbilities")
+        }
     }
 }

@@ -19,7 +19,10 @@ import androidx.compose.ui.unit.dp
 import com.example.pokedex.ui.theme.PokedexTheme
 
 @Composable
-fun TypeCard(type: String) {
+fun TypeCard(
+    type: String,
+    modifier: Modifier = Modifier
+) {
     // change the color of the card based on the type
     val color = when (type) {
         "ほのお" -> Color(0xFFFF4040)
@@ -40,13 +43,14 @@ fun TypeCard(type: String) {
         "フェアリー" -> Color(0xFFEE99AC)
         "ノーマル" -> Color(0xFFB0B0B0)
         "はがね" -> Color(0xFFB8B8D0)
-        else -> Color(0xFFA8A77A)
+        else -> Color.White
     }
 
     // display the type in a card
     OutlinedCard(
         modifier = Modifier
-            .width(80.dp),
+            .width(80.dp)
+            .then(modifier),
         shape = RoundedCornerShape(8.dp),
         border = BorderStroke(1.dp, Color.Black),
         colors = CardDefaults.outlinedCardColors(containerColor = color)

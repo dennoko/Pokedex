@@ -11,15 +11,18 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun PokeDetailTopBar(
     isFavorite: Boolean = false,
+    idAndName: String = "",
     backIconClicked: () -> Unit = {},
     favoriteIconClicked: () -> Unit = {}
 ) {
@@ -46,7 +49,13 @@ fun PokeDetailTopBar(
                 backIconClicked()
             }
 
-            Spacer(modifier = Modifier.weight(5f))
+            Text(
+                text = idAndName,
+                modifier = Modifier.weight(5f),
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.headlineMedium
+            )
 
             val starColor = if (isFavorite) {
                 Color.Yellow

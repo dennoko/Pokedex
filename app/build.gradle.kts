@@ -74,6 +74,7 @@ dependencies {
 
     // Coil
     implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("io.coil-kt:coil-gif:2.6.0")
 
     // Ktor
     implementation("io.ktor:ktor-client-core:1.6.4")

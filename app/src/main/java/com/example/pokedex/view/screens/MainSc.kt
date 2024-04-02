@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun MainScreen(
     uiState: MainScUiState,
-    changeShowDetail: () -> Unit = {},
+    changeShowDetail: (urls: List<String>) -> Unit = {},
 ) {
     val lazyPagingItems = uiState.pokeDataList.collectAsLazyPagingItems()
     var pokeDetail by remember { mutableStateOf<PokemonData?>(null)}
@@ -53,7 +53,7 @@ fun MainScreen(
 
                         PokemonInfoCard( pokeData ) {
                             pokeDetail = it
-                            changeShowDetail()
+                            changeShowDetail(it.abilities.map { ability -> ability.ability.url })
                         }
                     }
                 }
@@ -68,7 +68,8 @@ fun MainScreen(
             ) {
                 PokeDetailSc(
                     pokeDetail,
-                    backIconClicked = { changeShowDetail() }
+                    abilities = uiState.abilities,
+                    backIconClicked = { changeShowDetail(listOf()) }
                 )
             }
         }
