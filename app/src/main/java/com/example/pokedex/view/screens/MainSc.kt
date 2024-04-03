@@ -33,6 +33,8 @@ fun MainScreen(
     pokemonInfoCardClicked: (data: PokemonData) -> Unit,
     changeShowDetail: () -> Unit,
     changeShowAndInitDetail: (id: Int?, urls: List<String>) -> Unit,
+    favoriteIconClicked: (data: PokemonDataForInfoCard) -> Unit,
+    pokeDetailScInit: (id: Int) -> Unit
 ) {
     val lazyPagingItems = uiState.pokeDataList.collectAsLazyPagingItems()
 
@@ -82,8 +84,14 @@ fun MainScreen(
             ) {
                 PokeDetailSc(
                     uiState = uiState.pokeDetailScUiState,
+                    init = {
+                        pokeDetailScInit(it)
+                    },
                     backIconClicked = {
                         changeShowAndInitDetail(null, listOf())
+                    },
+                    favoriteIconClicked = {
+                        favoriteIconClicked(it)
                     }
                 )
             }

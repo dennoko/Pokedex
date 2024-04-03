@@ -3,6 +3,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     // serialization plugin
     kotlin("plugin.serialization") version "1.9.23"
+    // kapt
+    id("kotlin-kapt")
 }
 
 android {
@@ -87,4 +89,10 @@ dependencies {
     // paging 3
     implementation("androidx.paging:paging-runtime-ktx:3.2.1")
     implementation("androidx.paging:paging-compose:3.3.0-alpha05")
+
+    // room
+    implementation("androidx.room:room-runtime:2.6.1")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
 }

@@ -1,7 +1,6 @@
 package com.example.pokedex
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -18,16 +17,19 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.pokedex.model.translation.TranslationManager
 import com.example.pokedex.ui.theme.PokedexTheme
+import com.example.pokedex.view.screens.FavoritePokemonSc
 import com.example.pokedex.view.screens.MainScreen
 import com.example.pokedex.view.ui_components.CustomBottomAppBar
 import com.example.pokedex.view.ui_components.CustomTopAppBar
-import com.example.pokedex.viewmodel.MainScViewModel
+import com.example.pokedex.viewmodel.AppViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val mainvm: MainScViewModel by viewModels()
+        val mainvm: AppViewModel by viewModels()
+        // Roomの初期化
+        mainvm.initRoomRepository(this)
 
         // 翻訳の準備
         TranslationManager.loadTranslations(this)
@@ -36,6 +38,8 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             // MainScreen UI State
             val mainUiState by mainvm.mainScUiState.collectAsState()
+            // FavoritePokemonSc UI State
+            val favoritePokemonScUiState by mainvm.favoriteScUiState.collectAsState()
 
             PokedexTheme {
                 // A surface container using the 'background' color from the theme
@@ -53,7 +57,11 @@ class MainActivity : ComponentActivity() {
                                     mainvm.changeShowDetail(isShow = false)
                                     navController.navigate("main")
                                     mainvm.clearDetailData()
-                                }
+                                },
+                                starIconClicked = {
+                                    navController.navigate("favorite")
+                                    mainvm.clearDetailData()
+                                },
                             )
                         }
                     ) {
@@ -75,6 +83,27 @@ class MainActivity : ComponentActivity() {
                                     },
                                     pokemonInfoCardClicked = {
                                         mainvm.pokemonInfoCardClicked(it)
+                                    },
+                                    favoriteIconClicked = {
+                                        mainvm.favoriteIconClicked(it)
+                                    },
+                                    pokeDetailScInit = {
+                                        mainvm.isFavorite(it)
+                                    }
+                                )
+                            }
+
+                            composable("favorite") {
+                                FavoritePokemonSc(
+                                    uiState = favoritePokemonScUiState,
+                                    init = {
+                                        mainvm.getAllFavoritePokemon()
+                                    },
+                                    infoCardClicked = {
+                                        mainUiState.searchText.value = it.toString()
+                                        mainvm.searchPokemon()
+                                        mainvm.changeShowDetail(true)
+                                        navController.navigate("main")
                                     }
                                 )
                             }

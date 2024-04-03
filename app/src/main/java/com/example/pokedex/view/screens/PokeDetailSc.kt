@@ -31,6 +31,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,24 +64,50 @@ import com.example.pokedex.view.ui_components.PokeDetailTopBar
 import com.example.pokedex.view.ui_components.StatusCard
 import com.example.pokedex.view.ui_components.TypeCard
 import com.example.pokedex.viewmodel.data.PokeDetailScUiState
+import com.example.pokedex.viewmodel.data.PokemonDataForInfoCard
 import io.ktor.http.ContentType.Image.GIF
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 @Composable
 fun PokeDetailSc(
     uiState: PokeDetailScUiState,
+    init: (id: Int) -> Unit,
     backIconClicked: () -> Unit = {},
-    favoriteIconClicked: () -> Unit = {},
+    favoriteIconClicked: (data: PokemonDataForInfoCard) -> Unit = {},
 ) {
     Log.d("DataTest", "${uiState.data?.sprites?.other?.showdown}")
+    LaunchedEffect(Unit) {
+        withContext(Dispatchers.IO) {
+            uiState.data?.let {
+                Log.d("initTest", "${it.id}")
+                init(it.id)
+            }
+        }
+    }
+
 
     Column(
         modifier = Modifier
     ) {
         PokeDetailTopBar(
-            isFavorite = uiState.isFavorite,
+            isFavorite = uiState.isFavorite.value,
             idAndName = "No.${uiState.data?.id}  ${TranslationManager.getJPName(uiState.data?.name?: "")}",
             backIconClicked = backIconClicked,
-            favoriteIconClicked = favoriteIconClicked
+            favoriteIconClicked = {
+                favoriteIconClicked(
+                    PokemonDataForInfoCard(
+                        id = uiState.data?.id?: 0,
+                        name = uiState.data?.name?: "",
+                        imgUrl = uiState.data?.sprites?.frontDefault ?:"",
+                        types = listOf(
+                            TranslationManager.getJPType(uiState.data?.types?.get(0)?.type?.name?: ""),
+                            TranslationManager.getJPType(uiState.data?.types?.getOrNull(1)?.type?.name?: "")
+                        ),
+                    )
+                )
+            }
         )
 
         Column(
