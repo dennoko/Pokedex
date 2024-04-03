@@ -2,6 +2,7 @@ package com.example.pokedex.model.repository
 
 import android.util.Log
 import com.example.pokedex.model.data.api_response.AbilityData
+import com.example.pokedex.model.data.api_response.FlavorText
 import com.example.pokedex.model.data.api_response.NormalApiResponse
 import com.example.pokedex.model.data.api_response.PokemonData
 import io.ktor.client.HttpClient
@@ -31,6 +32,15 @@ class ApiRepository(
         // Deserialize the response
         val data = response.receive<PokemonData>()
         Log.d("ApiRepositoryMethod", "getPokemon: $data")
+        return data
+    }
+
+    // get flavor text
+    suspend fun getFlavorText(id: Int): FlavorText {
+        val response: HttpResponse = client.get("https://pokeapi.co/api/v2/pokemon-species/$id/")
+        // Deserialize the response
+        var data = response.receive<FlavorText>()
+        data = data.copy(flavorTextEntries = data.flavorTextEntries.filter { it.language.name == "ja" })
         return data
     }
 

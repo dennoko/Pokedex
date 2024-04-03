@@ -7,6 +7,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.pokedex.model.data.api_response.AbilityData
+import com.example.pokedex.model.data.api_response.FlavorText
 import com.example.pokedex.model.data.api_response.PokemonData
 import com.example.pokedex.model.paging.MainScPagingSource
 import com.example.pokedex.model.repository.ApiRepository
@@ -56,6 +57,18 @@ class MainScViewModel: ViewModel() {
     fun changeShowDetail(isShow: Boolean = !_uiState.value.isShowDetail) {
         val newUiState = _uiState.value.copy(isShowDetail = isShow)
         _uiState.value = newUiState
+    }
+
+    // get the flavor text
+    fun getFlavorText(id: Int?) {
+        if (id != null) {
+            viewModelScope.launch {
+                val flavorText = apiRepository.getFlavorText(id!!)
+                val newUiState = _uiState.value.copy(flavorText = flavorText)
+                _uiState.value = newUiState
+                Log.d("MainScViewModelMethod", "getFlavorText: $flavorText")
+            }
+        }
     }
 
     // get the ability

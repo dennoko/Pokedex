@@ -50,13 +50,17 @@ import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import coil.size.Size.Companion.ORIGINAL
 import com.example.pokedex.model.data.api_response.AbilityData
+import com.example.pokedex.model.data.api_response.FlavorText
 import com.example.pokedex.model.data.api_response.PokemonData
 import com.example.pokedex.model.translation.TranslationManager
 import com.example.pokedex.model.url_manager.UrlManager
 import com.example.pokedex.ui.theme.PokedexTheme
 import com.example.pokedex.view.ui_components.ClickableIcon
+import com.example.pokedex.view.ui_components.DetailItem
+import com.example.pokedex.view.ui_components.ExpandableCard
 import com.example.pokedex.view.ui_components.PokeDetailGif
 import com.example.pokedex.view.ui_components.PokeDetailTopBar
+import com.example.pokedex.view.ui_components.StatusCard
 import com.example.pokedex.view.ui_components.TypeCard
 import io.ktor.http.ContentType.Image.GIF
 
@@ -64,6 +68,7 @@ import io.ktor.http.ContentType.Image.GIF
 fun PokeDetailSc(
     data: PokemonData?,
     isFavorite: Boolean = false,
+    flavorText: FlavorText? = null,
     abilities: List<AbilityData> = listOf(),
     backIconClicked: () -> Unit = {},
     favoriteIconClicked: () -> Unit = {},
@@ -87,7 +92,7 @@ fun PokeDetailSc(
             // Image
             PokeDetailGif(data = data)
 
-            Divider(modifier = Modifier.padding(vertical = 8.dp), color = MaterialTheme.colorScheme.secondary)
+            Divider(modifier = Modifier.padding(top = 8.dp), color = MaterialTheme.colorScheme.secondary)
 
             // Status
             Column(
@@ -96,18 +101,7 @@ fun PokeDetailSc(
                     .verticalScroll(rememberScrollState())
             ) {
                 // types
-                Row(
-                    modifier = Modifier
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "タイプ： ",
-                        modifier = Modifier
-                            .width(80.dp),
-                        style = MaterialTheme.typography.labelLarge,
-                    )
-
+                DetailItem(title = "タイプ") {
                     for (type in data.types) {
                         TypeCard(
                             type = TranslationManager.getJPType(type.type.name),
@@ -116,19 +110,15 @@ fun PokeDetailSc(
                     }
                 }
 
-                // abilities
-                Row(
-                    modifier = Modifier
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.Top
-                ) {
-                    Text(
-                        text = "特性： ",
-                        modifier = Modifier
-                            .width(80.dp),
-                        style = MaterialTheme.typography.labelLarge,
-                    )
+                // flavor text
+                DetailItem(title = "生態") {
+                    val txt = flavorText?.flavorTextEntries?.get(0)?.flavorText ?: ""
+                    val singleLineTxt = txt.replace("\n", "")
+                    Text(text = singleLineTxt)
+                }
 
+                // abilities
+                DetailItem(title = "特性") {
                     Column {
                         for (ability in abilities) {
                             var abilityNameAtJP = ""
@@ -138,14 +128,34 @@ fun PokeDetailSc(
                                     return@forEach
                                 }
                             }
-                            Text(
-                                text = abilityNameAtJP,
-                                maxLines = 1,
-                                style = MaterialTheme.typography.bodyLarge,
-                            )
+
+                            var abilityDescriptionAtJP = ""
+                            ability.flavorTextEntries.forEach {
+                                if (it.language.name == "ja") {
+                                    abilityDescriptionAtJP = it.flavorText
+                                    abilityDescriptionAtJP = abilityDescriptionAtJP.replace("\n", "")
+                                    return@forEach
+                                }
+                            }
+
+                            ExpandableCard(
+                                title = abilityNameAtJP,
+                            ) {
+                                Text(
+                                    text = abilityDescriptionAtJP,
+                                    modifier = Modifier
+                                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
                             Spacer(Modifier.height(8.dp))
                         }
                     }
+                }
+
+                // status
+                DetailItem(title = "種族値") {
+                    StatusCard(status = data.stats)
                 }
             }
         }

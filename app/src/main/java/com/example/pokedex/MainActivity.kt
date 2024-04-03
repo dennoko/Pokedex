@@ -60,8 +60,9 @@ class MainActivity : ComponentActivity() {
                             composable("main") {
                                 MainScreen(
                                     mainUiState,
-                                    changeShowDetail = { urls ->
+                                    changeShowDetail = { id, urls ->
                                         mainvm.changeShowDetail()
+                                        mainvm.getFlavorText(id)
                                         mainvm.getAbility(urls)
                                     },
                                 )
