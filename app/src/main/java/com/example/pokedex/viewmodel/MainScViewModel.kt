@@ -65,11 +65,15 @@ class MainScViewModel: ViewModel() {
     fun getFlavorText(id: Int?) {
         if (id != null) {
             viewModelScope.launch {
-                val flavorText = apiRepository.getFlavorText(id)
-                val newDetailState = _uiState.value.pokeDetailScUiState.copy(flavorText = flavorText.flavorTextEntries[0].flavorText)
-                val newUiState = _uiState.value.copy(pokeDetailScUiState = newDetailState)
-                _uiState.value = newUiState
-                Log.d("MainScViewModelMethod", "getFlavorText: $flavorText")
+                try {
+                    val flavorText = apiRepository.getFlavorText(id)
+                    val newDetailState = _uiState.value.pokeDetailScUiState.copy(flavorText = flavorText.flavorTextEntries[0].flavorText)
+                    val newUiState = _uiState.value.copy(pokeDetailScUiState = newDetailState)
+                    _uiState.value = newUiState
+                    Log.d("MainScViewModelMethod", "getFlavorText: $flavorText")
+                } catch (e: Exception) {
+                    Log.d("MainScViewModelMethod", "getFlavorText: \n${e.cause}\n${e.message}")
+                }
             }
         }
     }
