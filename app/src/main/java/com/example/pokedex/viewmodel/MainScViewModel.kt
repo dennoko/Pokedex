@@ -11,7 +11,9 @@ import com.example.pokedex.model.data.api_response.FlavorText
 import com.example.pokedex.model.data.api_response.PokemonData
 import com.example.pokedex.model.paging.MainScPagingSource
 import com.example.pokedex.model.repository.ApiRepository
+import com.example.pokedex.model.translation.TranslationManager
 import com.example.pokedex.viewmodel.data.MainScUiState
+import com.example.pokedex.viewmodel.data.PokeDetailScUiState
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.features.json.JsonFeature
@@ -63,8 +65,9 @@ class MainScViewModel: ViewModel() {
     fun getFlavorText(id: Int?) {
         if (id != null) {
             viewModelScope.launch {
-                val flavorText = apiRepository.getFlavorText(id!!)
-                val newUiState = _uiState.value.copy(flavorText = flavorText)
+                val flavorText = apiRepository.getFlavorText(id)
+                val newDetailState = _uiState.value.pokeDetailScUiState.copy(flavorText = flavorText.flavorTextEntries[0].flavorText)
+                val newUiState = _uiState.value.copy(pokeDetailScUiState = newDetailState)
                 _uiState.value = newUiState
                 Log.d("MainScViewModelMethod", "getFlavorText: $flavorText")
             }
@@ -80,9 +83,62 @@ class MainScViewModel: ViewModel() {
                 getAbilities.add(ability)
             }
 
-            val newUiState = _uiState.value.copy(abilities = getAbilities)
+            val newDetailState = _uiState.value.pokeDetailScUiState.copy(abilities = getAbilities)
+            val newUiState = _uiState.value.copy(pokeDetailScUiState = newDetailState)
             _uiState.value = newUiState
             Log.d("MainScViewModelMethod", "getAbility: $getAbilities")
         }
+    }
+
+    // search the pokemon
+    private fun searchPokemon() {
+        viewModelScope.launch {
+            // if the input is a number, search by id
+            try {
+                if (_uiState.value.searchText.value.toIntOrNull() != null) {
+                    val pokemon = apiRepository.getPokemonFromId(_uiState.value.searchText.value.toInt())
+                    Log.d("SearchTest", "searchPokemon by id: $pokemon")
+                    setDetailData(pokemon)
+                    getAbility(pokemon.abilities.map { it.ability.url })
+                    getFlavorText(pokemon.id)
+                } else {
+                    // if the input is a string, search by name
+                    // translate the name to english
+                    val enName = TranslationManager.getENName(_uiState.value.searchText.value)
+                    val pokemon = apiRepository.getPokemonFromName(enName)
+                    Log.d("SearchTest", "searchPokemon by name: $pokemon")
+                    setDetailData(pokemon)
+                    getAbility(pokemon.abilities.map { it.ability.url })
+                    getFlavorText(pokemon.id)
+                }
+            } catch (e: Exception) {
+                Log.d("SearchTest", "searchPokemon: \n${e.cause}\n${e.message}")
+            }
+        }
+    }
+
+    // set the detail data
+    private fun setDetailData(data: PokemonData) {
+        val newDetailState = _uiState.value.pokeDetailScUiState.copy(data = data)
+        val newUiState = _uiState.value.copy(pokeDetailScUiState = newDetailState)
+        _uiState.value = newUiState
+    }
+
+    fun pokemonInfoCardClicked( pokeData: PokemonData ) {
+        setDetailData(pokeData)
+        getAbility(pokeData.abilities.map { it.ability.url })
+        getFlavorText(pokeData.id)
+        changeShowDetail()
+    }
+
+    fun onDoneAtSearch() {
+        searchPokemon()
+    }
+
+    // clear the detail data
+    fun clearDetailData() {
+        val newDetailState = PokeDetailScUiState()
+        val newUiState = _uiState.value.copy(pokeDetailScUiState = newDetailState)
+        _uiState.value = newUiState
     }
 }

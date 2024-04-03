@@ -27,33 +27,35 @@ fun StatusCard(status: List<Stat>) {
             modifier = Modifier
                 .padding(8.dp)
         ) {
-            Row {
-                Text(text = "HP:", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
-                Text(text = status[0].baseStat.toString(), modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
-                Text(text = "攻撃:", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
-                Text(text = status[1].baseStat.toString(), modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
-                Text(text = "防御:", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
-                Text(text = status[2].baseStat.toString(), modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
-            }
+            if(status.size == 6) {
+                Row {
+                    Text(text = "HP:", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
+                    Text(text = status[0].baseStat.toString(), modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
+                    Text(text = "攻撃:", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
+                    Text(text = status[1].baseStat.toString(), modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
+                    Text(text = "防御:", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
+                    Text(text = status[2].baseStat.toString(), modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
+                }
 
-            Row {
-                Text(text = "特攻:", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
-                Text(text = status[3].baseStat.toString(), modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
-                Text(text = "特防:", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
-                Text(text = status[4].baseStat.toString(), modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
-                Text(text = "素早さ:", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
-                Text(text = status[5].baseStat.toString(), modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
-            }
-            Spacer(modifier = Modifier.height(4.dp))
+                Row {
+                    Text(text = "特攻:", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
+                    Text(text = status[3].baseStat.toString(), modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
+                    Text(text = "特防:", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
+                    Text(text = status[4].baseStat.toString(), modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
+                    Text(text = "素早さ:", modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
+                    Text(text = status[5].baseStat.toString(), modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
+                }
+                Spacer(modifier = Modifier.height(4.dp))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                Text(text = "合計:", style = MaterialTheme.typography.labelMedium)
-                Text(text = status.sumBy { it.baseStat }.toString(), style = MaterialTheme.typography.labelMedium)
-                Spacer(modifier = Modifier.width(16.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    Text(text = "合計:", style = MaterialTheme.typography.labelMedium)
+                    Text(text = status.sumBy { it.baseStat }.toString(), style = MaterialTheme.typography.labelMedium)
+                    Spacer(modifier = Modifier.width(16.dp))
+                }
             }
         }
     }

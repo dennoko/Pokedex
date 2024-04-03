@@ -1,6 +1,10 @@
 package com.example.pokedex.model.url_manager
 
 object UrlManager {
+    fun getDefaultImageUrl(id: Int): String {
+        return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/${id}.gif"
+    }
+
     fun getNextGifImageUrl(id: Int, currentImageIndex: Int = 0): String {
         val urlList = listOf(
             // front_default

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
@@ -25,7 +26,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,9 +38,13 @@ import com.example.pokedex.ui.theme.PokedexTheme
 
 @Composable
 fun SearchBox(
+    text: String = "",
+    onValueChange: (text: String) -> Unit = {},
+    onDone: (text: String) -> Unit = {},
     tuneIconClicked: () -> Unit = {}
 ) {
-    var text by remember { mutableStateOf("") }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
 
     Card(
         modifier = Modifier
@@ -53,7 +61,7 @@ fun SearchBox(
         ) {
             TextField(
                 value = text,
-                onValueChange = { text = it },
+                onValueChange = { onValueChange(it) },
                 modifier = Modifier
                     .weight(6f),
                 placeholder = {
@@ -62,6 +70,15 @@ fun SearchBox(
                 leadingIcon = {
                     Icon(imageVector = Icons.Default.Search, contentDescription = "Search icon")
                 },
+                // when pressing enter key, the keyboard will be hidden
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        keyboardController?.hide()
+                        focusManager.clearFocus()
+                        onDone(text)
+                        onValueChange("")
+                    }
+                ),
                 singleLine = true,
                 shape = RoundedCornerShape(8.dp),
                 colors = TextFieldDefaults.colors(

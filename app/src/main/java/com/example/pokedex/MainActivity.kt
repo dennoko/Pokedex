@@ -52,6 +52,7 @@ class MainActivity : ComponentActivity() {
                                 homeIconClicked = {
                                     mainvm.changeShowDetail(isShow = false)
                                     navController.navigate("main")
+                                    mainvm.clearDetailData()
                                 }
                             )
                         }
@@ -60,11 +61,21 @@ class MainActivity : ComponentActivity() {
                             composable("main") {
                                 MainScreen(
                                     mainUiState,
-                                    changeShowDetail = { id, urls ->
+                                    changeShowDetail = {
+                                        mainvm.changeShowDetail()
+                                    },
+                                    changeShowAndInitDetail = { id, urls ->
                                         mainvm.changeShowDetail()
                                         mainvm.getFlavorText(id)
                                         mainvm.getAbility(urls)
+                                        mainvm.clearDetailData()
                                     },
+                                    onDone = {
+                                        mainvm.onDoneAtSearch()
+                                    },
+                                    pokemonInfoCardClicked = {
+                                        mainvm.pokemonInfoCardClicked(it)
+                                    }
                                 )
                             }
                         }

@@ -34,7 +34,7 @@ import com.example.pokedex.model.url_manager.UrlManager
 
 @Composable
 fun PokeDetailGif(
-    data: PokemonData?
+    id: Int,
 ) {
     val imageLoader = ImageLoader.Builder(LocalContext.current)
         .components {
@@ -46,7 +46,7 @@ fun PokeDetailGif(
         }
         .build()
 
-    var imgData by remember { mutableStateOf(data?.sprites?.other?.showdown?.frontDefault) }
+    var imgData by remember { mutableStateOf(UrlManager.getDefaultImageUrl(id)) }
 
     val painter = rememberAsyncImagePainter(
         ImageRequest.Builder(LocalContext.current)
@@ -76,7 +76,7 @@ fun PokeDetailGif(
                     .weight(1f),
                 color = Color.Black
             ) {
-                imgData = UrlManager.getPrevGigImageUrl(data?.id!!, currentImageIndex)
+                imgData = UrlManager.getPrevGigImageUrl(id, currentImageIndex)
                 currentImageIndex = (currentImageIndex - 1 + 4) % 4
             }
 
@@ -96,7 +96,7 @@ fun PokeDetailGif(
                     .weight(1f),
                 color = Color.Black
             ) {
-                imgData = UrlManager.getNextGifImageUrl(data?.id!!, currentImageIndex)
+                imgData = UrlManager.getNextGifImageUrl(id, currentImageIndex)
                 currentImageIndex = (currentImageIndex + 1) % 4
             }
         }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,23 +21,37 @@ import com.example.pokedex.model.translation.TranslationManager
 import com.example.pokedex.view.ui_components.PokemonInfoCard
 import com.example.pokedex.view.ui_components.SearchBox
 import com.example.pokedex.viewmodel.data.MainScUiState
+import com.example.pokedex.viewmodel.data.PokeDetailScUiState
 import com.example.pokedex.viewmodel.data.PokemonDataForInfoCard
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun MainScreen(
     uiState: MainScUiState,
-    changeShowDetail: (id: Int?, urls: List<String>) -> Unit,
+    onDone: () -> Unit,
+    pokemonInfoCardClicked: (data: PokemonData) -> Unit,
+    changeShowDetail: () -> Unit,
+    changeShowAndInitDetail: (id: Int?, urls: List<String>) -> Unit,
 ) {
     val lazyPagingItems = uiState.pokeDataList.collectAsLazyPagingItems()
-    var pokeDetail by remember { mutableStateOf<PokemonData?>(null)}
 
     Box {
         Column(
             modifier = Modifier
                 .background(color = MaterialTheme.colorScheme.background)
         ) {
-            SearchBox()
+            SearchBox(
+                text = uiState.searchText.value,
+                onValueChange = {
+                    uiState.searchText.value = it
+                },
+                onDone = {
+                    onDone()
+                    uiState.searchText.value = it
+                    changeShowDetail()
+                }
+            )
 
             LazyColumn {
                 items(lazyPagingItems.itemCount) { index ->
@@ -52,8 +67,7 @@ fun MainScreen(
                         )
 
                         PokemonInfoCard( pokeData ) {
-                            pokeDetail = it
-                            changeShowDetail( index+1, it.abilities.map { ability -> ability.ability.url })
+                            pokemonInfoCardClicked(it)
                         }
                     }
                 }
@@ -67,10 +81,10 @@ fun MainScreen(
                     .background(color = MaterialTheme.colorScheme.background)
             ) {
                 PokeDetailSc(
-                    pokeDetail,
-                    flavorText = uiState.flavorText,
-                    abilities = uiState.abilities,
-                    backIconClicked = { changeShowDetail(null, listOf()) }
+                    uiState = uiState.pokeDetailScUiState,
+                    backIconClicked = {
+                        changeShowAndInitDetail(null, listOf())
+                    }
                 )
             }
         }

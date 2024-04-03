@@ -62,25 +62,23 @@ import com.example.pokedex.view.ui_components.PokeDetailGif
 import com.example.pokedex.view.ui_components.PokeDetailTopBar
 import com.example.pokedex.view.ui_components.StatusCard
 import com.example.pokedex.view.ui_components.TypeCard
+import com.example.pokedex.viewmodel.data.PokeDetailScUiState
 import io.ktor.http.ContentType.Image.GIF
 
 @Composable
 fun PokeDetailSc(
-    data: PokemonData?,
-    isFavorite: Boolean = false,
-    flavorText: FlavorText? = null,
-    abilities: List<AbilityData> = listOf(),
+    uiState: PokeDetailScUiState,
     backIconClicked: () -> Unit = {},
     favoriteIconClicked: () -> Unit = {},
 ) {
-    Log.d("DataTest", "${data?.sprites?.other?.showdown}")
+    Log.d("DataTest", "${uiState.data?.sprites?.other?.showdown}")
 
     Column(
         modifier = Modifier
     ) {
         PokeDetailTopBar(
-            isFavorite = isFavorite,
-            idAndName = "No.${data?.id}  ${TranslationManager.getJPName(data?.name!!)}",
+            isFavorite = uiState.isFavorite,
+            idAndName = "No.${uiState.data?.id}  ${TranslationManager.getJPName(uiState.data?.name?: "")}",
             backIconClicked = backIconClicked,
             favoriteIconClicked = favoriteIconClicked
         )
@@ -90,7 +88,9 @@ fun PokeDetailSc(
                 .weight(1f)
         ) {
             // Image
-            PokeDetailGif(data = data)
+            if(uiState.data?.id != null) {
+                PokeDetailGif(id = uiState.data.id)
+            }
 
             Divider(modifier = Modifier.padding(top = 8.dp), color = MaterialTheme.colorScheme.secondary)
 
@@ -102,17 +102,19 @@ fun PokeDetailSc(
             ) {
                 // types
                 DetailItem(title = "タイプ") {
-                    for (type in data.types) {
-                        TypeCard(
-                            type = TranslationManager.getJPType(type.type.name),
-                        )
-                        Spacer(Modifier.width(8.dp))
+                    if ( (uiState.data?.types != null) && uiState.data.types.isNotEmpty()) {
+                        for (type in uiState.data.types) {
+                            TypeCard(
+                                type = TranslationManager.getJPType(type.type.name),
+                            )
+                            Spacer(Modifier.width(8.dp))
+                        }
                     }
                 }
 
                 // flavor text
                 DetailItem(title = "生態") {
-                    val txt = flavorText?.flavorTextEntries?.get(0)?.flavorText ?: ""
+                    val txt = uiState.flavorText
                     val singleLineTxt = txt.replace("\n", "")
                     Text(text = singleLineTxt)
                 }
@@ -120,42 +122,44 @@ fun PokeDetailSc(
                 // abilities
                 DetailItem(title = "特性") {
                     Column {
-                        for (ability in abilities) {
-                            var abilityNameAtJP = ""
-                            ability.names.forEach {
-                                if (it.language.name == "ja") {
-                                    abilityNameAtJP = it.name
-                                    return@forEach
+                        if(uiState.abilities.isNotEmpty()){
+                            for (ability in uiState.abilities) {
+                                var abilityNameAtJP = ""
+                                ability.names.forEach {
+                                    if (it.language.name == "ja") {
+                                        abilityNameAtJP = it.name
+                                        return@forEach
+                                    }
                                 }
-                            }
 
-                            var abilityDescriptionAtJP = ""
-                            ability.flavorTextEntries.forEach {
-                                if (it.language.name == "ja") {
-                                    abilityDescriptionAtJP = it.flavorText
-                                    abilityDescriptionAtJP = abilityDescriptionAtJP.replace("\n", "")
-                                    return@forEach
+                                var abilityDescriptionAtJP = ""
+                                ability.flavorTextEntries.forEach {
+                                    if (it.language.name == "ja") {
+                                        abilityDescriptionAtJP = it.flavorText
+                                        abilityDescriptionAtJP = abilityDescriptionAtJP.replace("\n", "")
+                                        return@forEach
+                                    }
                                 }
-                            }
 
-                            ExpandableCard(
-                                title = abilityNameAtJP,
-                            ) {
-                                Text(
-                                    text = abilityDescriptionAtJP,
-                                    modifier = Modifier
-                                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
+                                ExpandableCard(
+                                    title = abilityNameAtJP,
+                                ) {
+                                    Text(
+                                        text = abilityDescriptionAtJP,
+                                        modifier = Modifier
+                                            .padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
+                                Spacer(Modifier.height(8.dp))
                             }
-                            Spacer(Modifier.height(8.dp))
                         }
                     }
                 }
 
                 // status
                 DetailItem(title = "種族値") {
-                    StatusCard(status = data.stats)
+                    StatusCard(status = uiState.data?.stats?: listOf())
                 }
             }
         }
